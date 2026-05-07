@@ -1,1 +1,1 @@
-# Room Service SaaS — Web (Next.js)
+# Room Service SaaS — API (NestJS)
