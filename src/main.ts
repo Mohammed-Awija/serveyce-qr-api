@@ -6,11 +6,16 @@ async function bootstrap() {
     // Every route is now prefixed with /api
   app.setGlobalPrefix('api');
 
-  // Allow our Next.js dev server to call this API from the browser
+  // Read allowed origins from env var (comma-separated), fall back to localhost for dev
+  const allowedOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',').map((s) => s.trim())
+    : ['http://localhost:3000'];
+
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: allowedOrigins,
     credentials: true,
   });
+  
   await app.listen(process.env.PORT ?? 3001);
 }
 bootstrap();
