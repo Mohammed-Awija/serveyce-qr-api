@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Hotel {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  name      String
+  address   String?
+  timezone  String   @default("Europe/Istanbul")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
