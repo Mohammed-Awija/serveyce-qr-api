@@ -3,18 +3,19 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  const demoHotel = await prisma.hotel.upsert({
+  const demoOrg = await prisma.organization.upsert({
     where: { slug: 'demo-hotel' },
     update: {},
     create: {
       slug: 'demo-hotel',
       name: 'Demo Hotel Istanbul',
+      kind: 'HOTEL',
       address: 'Istiklal Caddesi 1, Beyoğlu, Istanbul',
       timezone: 'Europe/Istanbul',
     },
   });
 
-  console.log('Seeded:', demoHotel);
+  console.log('Seeded:', demoOrg);
 }
 
 main()

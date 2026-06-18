@@ -7,12 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Hotel {
-  id        String   @id @default(uuid())
-  slug      String   @unique
-  name      String
-  address   String?
-  timezone  String   @default("Europe/Istanbul")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum OrganizationKind {
+  HOTEL
+  HOSTEL
+  SHORT_TERM_RENTAL
+  RESTAURANT
+  CAFE
+  BAR
+  OTHER
+}
+
+enum LocationKind {
+  ROOM
+  TABLE
+  AREA
+  OTHER
+}
+
+model Organization {
+  id              String           @id @default(uuid())
+  slug            String           @unique
+  name            String
+  kind            OrganizationKind @default(HOTEL)
+  address         String?
+  defaultLanguage String           @default("en")
+  timezone        String           @default("Europe/Istanbul")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }

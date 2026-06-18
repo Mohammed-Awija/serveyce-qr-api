@@ -8,19 +8,19 @@ export class HealthController {
   @Get()
   async check() {
     let dbStatus = 'ok';
-    let hotelCount = 0;
+    let organizationCount = 0;
 
     try {
-      hotelCount = await this.prisma.hotel.count();
+      organizationCount = await this.prisma.organization.count();
     } catch (error) {
       dbStatus = 'error';
     }
 
     return {
       status: dbStatus === 'ok' ? 'ok' : 'degraded',
-      service: 'roomservice-api',
+      service: 'bambyce-serve-api',
       database: dbStatus,
-      hotelCount,
+      organizationCount,
       timestamp: new Date().toISOString(),
     };
   }
