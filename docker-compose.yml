@@ -1,21 +1,21 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: roomservice-postgres
+    container_name: serveyce-qr-postgres
     restart: unless-stopped
     ports:
       - '6432:5432'
     environment:
-      POSTGRES_USER: roomservice
+      POSTGRES_USER: serveyce
       POSTGRES_PASSWORD: dev_password_change_me
-      POSTGRES_DB: roomservice
+      POSTGRES_DB: serveyce
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - serveyce-postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U roomservice']
+      test: ['CMD-SHELL', 'pg_isready -U serveyce']
       interval: 5s
       timeout: 5s
       retries: 5
 
 volumes:
-  postgres-data:
+  serveyce-postgres-data:

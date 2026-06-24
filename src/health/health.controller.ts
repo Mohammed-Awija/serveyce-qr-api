@@ -18,7 +18,7 @@ export class HealthController {
 
     return {
       status: dbStatus === 'ok' ? 'ok' : 'degraded',
-      service: 'bambyce-serve-api',
+      service: 'serveyce-qr-api',
       database: dbStatus,
       organizationCount,
       timestamp: new Date().toISOString(),

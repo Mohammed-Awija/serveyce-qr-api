@@ -1,4 +1,4 @@
-# CLAUDE.md — bambyce-serve-api
+# CLAUDE.md — serveyce-qr-api
 
 > Context for AI assistants (Claude Code, Cursor, etc.) working in this repository.
 
@@ -6,20 +6,20 @@
 
 ## What this repo is
 
-This is the **backend API** for **Bambyce Serve**, the first product of the Bambyce platform (bambyce.com).
+This is the **backend API** for **ServeyceQr**, the first product of the Serveyce platform (serveyce.com).
 
-Bambyce Serve is a QR-code-based service portal for hospitality operators in Turkey: short-term rental hosts, small hotels, and hostels. Guests scan a QR code in their room, browse services in their language, and submit requests. Staff manage requests in real-time. Admins capture KBS-compliant guest registration data.
+ServeyceQr is a QR-code-based service portal for hospitality operators in Turkey: short-term rental hosts, small hotels, and hostels. Guests scan a QR code in their room, browse services in their language, and submit requests. Staff manage requests in real-time. Admins capture KBS-compliant guest registration data.
 
-The companion frontend repository is `bambyce-serve-web` (Next.js 16, deployed on Vercel).
+The companion frontend repository is `serveyce-qr-web` (Next.js 16, deployed on Vercel).
 
 ### Brand context (matters for naming decisions)
 
-Bambyce is a platform brand intended to support multiple verticals over time:
-- **Bambyce Serve** (this product, V1) — hospitality
-- **Bambyce Order** (planned future product) — restaurants, cafés, bars
+Serveyce is a platform brand intended to support multiple verticals over time:
+- **ServeyceQr** (this product, V1) — hospitality
+- **Serveyce Order** (planned future product) — restaurants, cafés, bars
 - Other verticals possible later
 
-Because of this, the **data model uses generic platform names** (`Organization`, not `Hotel`; `Location`, not `Room`; `OfferingType`, not `ServiceType`) so the schema doesn't need rewriting when Bambyce Order ships. The **UI and product surface remain hospitality-specific** for V1 — do not add restaurant features.
+Because of this, the **data model uses generic platform names** (`Organization`, not `Hotel`; `Location`, not `Room`; `OfferingType`, not `ServiceType`) so the schema doesn't need rewriting when Serveyce Order ships. The **UI and product surface remain hospitality-specific** for V1 — do not add restaurant features.
 
 When in doubt about a name, ask: "would this still make sense for a restaurant?" If yes, use the generic name. If no, it belongs in a vertical-specific module (like the KBS module).
 
@@ -51,7 +51,7 @@ When in doubt about a name, ask: "would this still make sense for a restaurant?"
 ## Folder structure
 
 ```
-bambyce-serve-api/
+serveyce-qr-api/
 ├── src/
 │   ├── auth/                      # (planned) Clerk JWT guard, tenant interceptor
 │   ├── webhooks/                  # (planned) Clerk webhook handler
@@ -120,7 +120,7 @@ When implementing a new feature involving tenant data: **never** trust a `organi
 
 ### Public vs authenticated endpoints
 
-The guest-facing QR code page (`bambyce-serve-web`'s `/o/[slug]/l/[locationId]`) calls **unauthenticated** API endpoints in `src/public/`. These:
+The guest-facing QR code page (`serveyce-qr-web`'s `/o/[slug]/l/[locationId]`) calls **unauthenticated** API endpoints in `src/public/`. These:
 - Resolve `orgSlug` → `organizationId` server-side
 - Validate the location belongs to that org
 - Rate-limit by IP
@@ -226,7 +226,7 @@ chore: pin prisma to v6 in package.json
 ## Reference
 
 - **Full product spec:** `SPEC.md` in this repo
-- **Frontend repo:** `bambyce-serve-web` (separate GitHub repo, deployed to Vercel)
-- **Brand site (planned):** bambyce.com
-- **Production API:** Railway-hosted (URL in `bambyce-serve-web/.env.example`)
+- **Frontend repo:** `serveyce-qr-web` (separate GitHub repo, deployed to Vercel)
+- **Brand site (planned):** serveyce.com
+- **Production API:** Railway-hosted (URL in `serveyce-qr-web/.env.example`)
 - **Production DB:** Neon (Frankfurt region)
