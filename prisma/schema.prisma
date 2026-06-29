@@ -24,6 +24,11 @@ enum LocationKind {
   OTHER
 }
 
+enum MembershipRole {
+  OWNER
+  STAFF
+}
+
 model Organization {
   id              String           @id @default(uuid())
   slug            String           @unique
@@ -32,6 +37,30 @@ model Organization {
   address         String?
   defaultLanguage String           @default("en")
   timezone        String           @default("Europe/Istanbul")
+  memberships     Membership[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+}
+
+model User {
+  id          String       @id @default(uuid())
+  clerkId     String       @unique
+  email       String
+  firstName   String?
+  lastName    String?
+  memberships Membership[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Membership {
+  id             String         @id @default(uuid())
+  userId         String
+  organizationId String
+  role           MembershipRole @default(OWNER)
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @default(now())
+
+  @@unique([userId, organizationId])
 }
