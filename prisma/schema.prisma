@@ -39,6 +39,7 @@ model Organization {
   timezone        String           @default("Europe/Istanbul")
   memberships     Membership[]
   locations       Location[]
+  offeringTypes   OfferingType[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 }
@@ -50,6 +51,20 @@ model Location {
   name           String
   displayName    String?
   notes          String?
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+}
+
+model OfferingType {
+  id             String       @id @default(uuid())
+  organizationId String
+  name           String
+  icon           String       @default("bell")
+  enabled        Boolean      @default(true)
+  displayOrder   Int          @default(0)
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
