@@ -29,6 +29,14 @@ enum MembershipRole {
   STAFF
 }
 
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
 model Organization {
   id              String           @id @default(uuid())
   slug            String           @unique
@@ -40,6 +48,7 @@ model Organization {
   memberships     Membership[]
   locations       Location[]
   offeringTypes   OfferingType[]
+  requests        Request[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 }
@@ -52,6 +61,7 @@ model Location {
   displayName    String?
   notes          String?
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requests       Request[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
@@ -66,6 +76,7 @@ model OfferingType {
   enabled        Boolean      @default(true)
   displayOrder   Int          @default(0)
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requests       Request[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
@@ -93,4 +104,23 @@ model Membership {
   createdAt      DateTime       @default(now())
 
   @@unique([userId, organizationId])
+}
+
+model Request {
+  id             String        @id @default(uuid())
+  organizationId String
+  locationId     String
+  offeringTypeId String
+  status         RequestStatus @default(PENDING)
+  guestName      String?
+  notes          String?
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  location       Location      @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  offeringType   OfferingType  @relation(fields: [offeringTypeId], references: [id], onDelete: Cascade)
+  createdAt      DateTime      @default(now())
+  acceptedAt     DateTime?
+  completedAt    DateTime?
+
+  @@index([organizationId])
+  @@index([status])
 }
