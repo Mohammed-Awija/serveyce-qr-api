@@ -38,8 +38,23 @@ model Organization {
   defaultLanguage String           @default("en")
   timezone        String           @default("Europe/Istanbul")
   memberships     Membership[]
+  locations       Location[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+}
+
+model Location {
+  id             String       @id @default(uuid())
+  organizationId String
+  kind           LocationKind @default(ROOM)
+  name           String
+  displayName    String?
+  notes          String?
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
 }
 
 model User {
