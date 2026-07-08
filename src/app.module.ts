@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { LocationsModule } from './locations/locations.module';
 import { OfferingTypesModule } from './offering-types/offering-types.module';
 import { PublicModule } from './public/public.module';
+import { RequestsModule } from './requests/requests.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PublicModule } from './public/public.module';
     LocationsModule,
     OfferingTypesModule,
     PublicModule,
+    RequestsModule,
   ],
   controllers: [AppController],
   providers: [
