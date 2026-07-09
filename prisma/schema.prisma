@@ -42,6 +42,11 @@ enum OfferingNodeType {
   ITEM
 }
 
+enum ModifierSelectionType {
+  SINGLE
+  MULTIPLE
+}
+
 model Organization {
   id              String           @id @default(uuid())
   slug            String           @unique
@@ -54,6 +59,8 @@ model Organization {
   locations       Location[]
   offeringTypes   OfferingType[]
   offeringNodes   OfferingNode[]
+  modifierGroups  ModifierGroup[]
+  modifierOptions ModifierOption[]
   requests        Request[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -99,15 +106,53 @@ model OfferingNode {
   enabled        Boolean          @default(true)
   displayOrder   Int              @default(0)
 
-  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  parent       OfferingNode?  @relation("NodeChildren", fields: [parentId], references: [id], onDelete: Cascade)
-  children     OfferingNode[] @relation("NodeChildren")
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parent         OfferingNode?   @relation("NodeChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children       OfferingNode[]  @relation("NodeChildren")
+  modifierGroups ModifierGroup[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([organizationId])
   @@index([parentId])
+}
+
+model ModifierGroup {
+  id             String                @id @default(uuid())
+  organizationId String
+  offeringNodeId String
+  name           String
+  selectionType  ModifierSelectionType @default(SINGLE)
+  required       Boolean               @default(false)
+  displayOrder   Int                   @default(0)
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  offeringNode OfferingNode     @relation(fields: [offeringNodeId], references: [id], onDelete: Cascade)
+  options      ModifierOption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([offeringNodeId])
+}
+
+model ModifierOption {
+  id              String @id @default(uuid())
+  organizationId  String
+  modifierGroupId String
+  name            String
+  displayOrder    Int    @default(0)
+
+  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  modifierGroup ModifierGroup @relation(fields: [modifierGroupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([modifierGroupId])
 }
 
 model User {
