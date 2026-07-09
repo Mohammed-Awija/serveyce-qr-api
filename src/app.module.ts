@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { LocationsModule } from './locations/locations.module';
 import { OfferingTypesModule } from './offering-types/offering-types.module';
+import { OfferingNodesModule } from './offering-nodes/offering-nodes.module';
 import { PublicModule } from './public/public.module';
 import { RequestsModule } from './requests/requests.module';
 
@@ -30,6 +31,7 @@ import { RequestsModule } from './requests/requests.module';
     UsersModule,
     LocationsModule,
     OfferingTypesModule,
+    OfferingNodesModule,
     PublicModule,
     RequestsModule,
   ],

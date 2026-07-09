@@ -37,6 +37,11 @@ enum RequestStatus {
   CANCELLED
 }
 
+enum OfferingNodeType {
+  CATEGORY
+  ITEM
+}
+
 model Organization {
   id              String           @id @default(uuid())
   slug            String           @unique
@@ -48,6 +53,7 @@ model Organization {
   memberships     Membership[]
   locations       Location[]
   offeringTypes   OfferingType[]
+  offeringNodes   OfferingNode[]
   requests        Request[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -81,6 +87,27 @@ model OfferingType {
   updatedAt      DateTime     @updatedAt
 
   @@index([organizationId])
+}
+
+model OfferingNode {
+  id             String           @id @default(uuid())
+  organizationId String
+  parentId       String?
+  name           String
+  type           OfferingNodeType @default(ITEM)
+  icon           String           @default("bell")
+  enabled        Boolean          @default(true)
+  displayOrder   Int              @default(0)
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parent       OfferingNode?  @relation("NodeChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children     OfferingNode[] @relation("NodeChildren")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([parentId])
 }
 
 model User {
