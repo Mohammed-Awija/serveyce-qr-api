@@ -48,4 +48,27 @@ export class LocationsController {
   remove(@CurrentOrg() org: TenantContext, @Param('id') id: string) {
     return this.locations.remove(org.organizationId, id);
   }
+
+  @Get(':id/offerings')
+  getAssignments(@CurrentOrg() org: TenantContext, @Param('id') id: string) {
+    return this.locations.getAssignments(org.organizationId, id);
+  }
+
+  @Post(':id/offerings/:nodeId')
+  assign(
+    @CurrentOrg() org: TenantContext,
+    @Param('id') id: string,
+    @Param('nodeId') nodeId: string,
+  ) {
+    return this.locations.assign(org.organizationId, id, nodeId);
+  }
+
+  @Delete(':id/offerings/:nodeId')
+  unassign(
+    @CurrentOrg() org: TenantContext,
+    @Param('id') id: string,
+    @Param('nodeId') nodeId: string,
+  ) {
+    return this.locations.unassign(org.organizationId, id, nodeId);
+  }
 }

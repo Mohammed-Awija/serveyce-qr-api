@@ -12,7 +12,6 @@ export class RequestsService {
       orderBy: { createdAt: 'desc' },
       include: {
         location: { select: { name: true } },
-        offeringType: { select: { name: true, icon: true } },
       },
     });
   }

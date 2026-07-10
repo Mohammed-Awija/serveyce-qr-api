@@ -48,50 +48,36 @@ enum ModifierSelectionType {
 }
 
 model Organization {
-  id              String           @id @default(uuid())
-  slug            String           @unique
-  name            String
-  kind            OrganizationKind @default(HOTEL)
-  address         String?
-  defaultLanguage String           @default("en")
-  timezone        String           @default("Europe/Istanbul")
-  memberships     Membership[]
-  locations       Location[]
-  offeringTypes   OfferingType[]
-  offeringNodes   OfferingNode[]
-  modifierGroups  ModifierGroup[]
-  modifierOptions ModifierOption[]
-  requests        Request[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id                String             @id @default(uuid())
+  slug              String             @unique
+  name              String
+  kind              OrganizationKind   @default(HOTEL)
+  address           String?
+  defaultLanguage   String             @default("en")
+  timezone          String             @default("Europe/Istanbul")
+  memberships       Membership[]
+  locations         Location[]
+  offeringNodes     OfferingNode[]
+  modifierGroups    ModifierGroup[]
+  modifierOptions   ModifierOption[]
+  requests          Request[]
+  locationOfferings LocationOffering[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model Location {
-  id             String       @id @default(uuid())
+  id             String             @id @default(uuid())
   organizationId String
-  kind           LocationKind @default(ROOM)
+  kind           LocationKind       @default(ROOM)
   name           String
   displayName    String?
   notes          String?
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   requests       Request[]
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  @@index([organizationId])
-}
-
-model OfferingType {
-  id             String       @id @default(uuid())
-  organizationId String
-  name           String
-  icon           String       @default("bell")
-  enabled        Boolean      @default(true)
-  displayOrder   Int          @default(0)
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  requests       Request[]
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  offerings      LocationOffering[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
 
   @@index([organizationId])
 }
@@ -106,16 +92,35 @@ model OfferingNode {
   enabled        Boolean          @default(true)
   displayOrder   Int              @default(0)
 
-  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  parent         OfferingNode?   @relation("NodeChildren", fields: [parentId], references: [id], onDelete: Cascade)
-  children       OfferingNode[]  @relation("NodeChildren")
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parent         OfferingNode?      @relation("NodeChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children       OfferingNode[]     @relation("NodeChildren")
   modifierGroups ModifierGroup[]
+  requests       Request[]
+  locationLinks  LocationOffering[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([organizationId])
   @@index([parentId])
+}
+
+model LocationOffering {
+  id             String @id @default(uuid())
+  organizationId String
+  locationId     String
+  offeringNodeId String
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  location     Location     @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  offeringNode OfferingNode @relation(fields: [offeringNodeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([locationId, offeringNodeId])
+  @@index([organizationId])
+  @@index([locationId])
 }
 
 model ModifierGroup {
@@ -179,19 +184,22 @@ model Membership {
 }
 
 model Request {
-  id             String        @id @default(uuid())
-  organizationId String
-  locationId     String
-  offeringTypeId String
-  status         RequestStatus @default(PENDING)
-  guestName      String?
-  notes          String?
-  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  location       Location      @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  offeringType   OfferingType  @relation(fields: [offeringTypeId], references: [id], onDelete: Cascade)
-  createdAt      DateTime      @default(now())
-  acceptedAt     DateTime?
-  completedAt    DateTime?
+  id              String        @id @default(uuid())
+  organizationId  String
+  locationId      String
+  offeringNodeId  String? // the tree item ordered
+  itemName        String? // snapshot of the item name at order time
+  selections      Json? // snapshot of chosen modifiers
+  status          RequestStatus @default(PENDING)
+  guestName       String?
+  notes           String?
+  assignedStaffId String?
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  location        Location      @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  offeringNode    OfferingNode? @relation(fields: [offeringNodeId], references: [id], onDelete: SetNull)
+  createdAt       DateTime      @default(now())
+  acceptedAt      DateTime?
+  completedAt     DateTime?
 
   @@index([organizationId])
   @@index([status])
